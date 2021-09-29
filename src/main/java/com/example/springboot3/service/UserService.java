@@ -2,26 +2,22 @@ package com.example.springboot3.service;
 
 
 import com.example.springboot3.dao.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import com.example.springboot3.entity.User;
 
-@Service("userService")
-public class UserService {
+@Service
+public class UserService implements UserDetailsService {
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    public void setUserDao(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-    @Autowired
-    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+
     public void addUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -33,18 +29,27 @@ public class UserService {
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     public void removeUserById(long id) {
         userRepository.deleteById(id);
     }
 
-    public User getUserById(long id) { return userRepository.findById(id); }
+    public User getUserById(long id) { return userRepository.findById(id).get(); }
 
-    public List<User> getAllUsers() { return userRepository.findAllBy(); }
+    public List<User> getAllUsers() { return userRepository.findAll(); }
 
     public User getUserByName(String username) {
-        return userRepository.findByUserName(username);
+        return userRepository.findByusername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = getUserByName(s);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found " + s);
+        }
+        return user;
     }
 }
