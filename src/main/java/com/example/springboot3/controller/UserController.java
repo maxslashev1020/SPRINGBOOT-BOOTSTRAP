@@ -31,8 +31,10 @@ public class UserController {
     }
 
     @GetMapping(value = "/admin")
-    public String listUsers(Model model) {
+    public String listUsers(@AuthenticationPrincipal User user, Model model) {
         model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("roles", roleService.getAllRoles());
+        model.addAttribute("user", user);
         return "all-user";
     }
 
@@ -72,7 +74,7 @@ public class UserController {
         return "redirect:/admin";
     }
 
-    @DeleteMapping(value = "/remove/{id}")
+    @PostMapping(value = "/remove/{id}")
     public String removeUser(@PathVariable("id") long id) {
         userService.removeUserById(id);
         return "redirect:/admin";
