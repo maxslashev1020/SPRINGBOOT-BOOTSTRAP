@@ -17,11 +17,13 @@ import java.util.Set;
 
 @Controller
 public class UserController {
-    @Autowired
     private UserService userService;
-    @Autowired
     private RoleService roleService;
-
+    @Autowired
+    public UserController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping(value = "/user")
     public String userInfo(@AuthenticationPrincipal User user, Model model){
