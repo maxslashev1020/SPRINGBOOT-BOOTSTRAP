@@ -11,11 +11,11 @@ import java.util.Set;
 
 @Component
 public class DBInit {
-    private final UserService userService;
-    private final RoleService roleService;
+    private final UserServiceImpl userService;
+    private final RoleServiceImpl roleService;
     final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    public DBInit(UserService userService, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public DBInit(UserServiceImpl userService, RoleServiceImpl roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
